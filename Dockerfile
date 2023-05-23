@@ -1,7 +1,7 @@
-FROM nvidia/cuda:12.0.0-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.1-devel-ubuntu20.04
 
-ENV TORCHVER=434eb16debf3aef08d95f19fb46e602c8fadc422
-ENV VISIONVER=v0.14.1-rc2
+ENV TORCHVER=5e635e17da76812761e63af0a023fee0c528edda
+ENV VISIONVER=v0.15.2
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -41,7 +41,8 @@ RUN cd /pytorch \
     && sed -i -e "/^if(DEFINED GLIBCXX_USE_CXX11_ABI)/i set(GLIBCXX_USE_CXX11_ABI 1)" \
                  CMakeLists.txt \
     && pip3 install -r requirements.txt \
-    && TORCH_CUDA_ARCH_LIST="9.0" USE_NCCL=OFF python3 setup.py install
+    && make triton \
+    && TORCH_CUDA_ARCH_LIST="9.0" python3 setup.py install
 
 RUN git clone https://github.com/pytorch/vision.git
 RUN cd /vision \
